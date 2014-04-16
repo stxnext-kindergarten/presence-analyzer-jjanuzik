@@ -194,7 +194,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Testing group presence during weekday.
         """
         self.assertDictEqual(
-            utils.group_by_weekday(utils.get_data()[10]),
+            utils.group_by_weekday(
+                utils.get_data()[10]),
             {
                 0: [],
                 1: [30047],
@@ -211,7 +212,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Testingpresence during weekday in seconds including start and end
         """
         self.assertDictEqual(
-            utils.group_by_weekday_in_secs(utils.get_data()[10]),
+            utils.group_by_weekday_in_secs(
+                utils.get_data()[10]),
             {
                 0: {'end': [], 'start': []},
                 1: {'end': [64792], 'start': [34745]},
