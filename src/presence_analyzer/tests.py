@@ -62,16 +62,18 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.data)
         self.assertEqual(len(data), 7)
-        self.assertListEqual(data,
-                             [
-                                 [u'Mon', 0],
-                                 [u'Tue', 30047.0],
-                                 [u'Wed', 24465.0],
-                                 [u'Thu', 23705.0],
-                                 [u'Fri', 0],
-                                 [u'Sat', 0],
-                                 [u'Sun', 0]
-                             ])
+        self.assertListEqual(
+            data,
+            [
+                [u'Mon', 0],
+                [u'Tue', 30047.0],
+                [u'Wed', 24465.0],
+                [u'Thu', 23705.0],
+                [u'Fri', 0],
+                [u'Sat', 0],
+                [u'Sun', 0]
+            ],
+        )
 
     def test_pesence_weekday_view(self):
         """
@@ -82,17 +84,40 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(len(data), 8)
-        self.assertListEqual(data,
-                             [
-                                 [u'Weekday', u'Presence (s)'],
-                                 [u'Mon', 0],
-                                 [u'Tue', 30047],
-                                 [u'Wed', 24465],
-                                 [u'Thu', 23705],
-                                 [u'Fri', 0],
-                                 [u'Sat', 0],
-                                 [u'Sun', 0],
-                             ])
+        self.assertListEqual(
+            data,
+            [
+                [u'Weekday', u'Presence (s)'],
+                [u'Mon', 0],
+                [u'Tue', 30047],
+                [u'Wed', 24465],
+                [u'Thu', 23705],
+                [u'Fri', 0],
+                [u'Sat', 0],
+                [u'Sun', 0],
+            ],
+        )
+
+    def test_presence_start_end(self):
+        """
+        Testing presence start and end
+        """
+        resp = self.client.get('/api/v1/presence_start_end/10')
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp.content_type, 'application/json')
+        data = json.loads(resp.data)
+        self.assertListEqual(
+            data,
+            [
+                [u'Mon', 0, 0],
+                [u'Tue', 34745.0, 64792.0],
+                [u'Wed', 33592.0, 58057.0],
+                [u'Thu', 38926.0, 62631.0],
+                [u'Fri', 0, 0],
+                [u'Sat', 0, 0],
+                [u'Sun', 0, 0],
+            ],
+        )
 
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
@@ -158,8 +183,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         self.assertEqual(
             utils.interval(
-                        (datetime.time(12, 30, 00)),
-                        (datetime.time(12, 30, 15)),
+                (datetime.time(12, 30, 00)),
+                (datetime.time(12, 30, 15)),
             ),
             15,
         )
@@ -169,7 +194,8 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Testing group presence during weekday.
         """
         self.assertDictEqual(
-            utils.group_by_weekday(utils.get_data()[10]), {
+            utils.group_by_weekday(utils.get_data()[10]),
+            {
                 0: [],
                 1: [30047],
                 2: [24465],
@@ -177,19 +203,25 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 4: [],
                 5: [],
                 6: [],
-            }
-            )
+            },
+        )
+
+    def test_group_by_weekday_in_secs(self):
+        """
+        Testingpresence during weekday in seconds including start and end
+        """
         self.assertDictEqual(
-            utils.group_by_weekday(utils.get_data()[11]), {
-                0: [24123],
-                1: [16564],
-                2: [25321],
-                3: [22969, 22999],
-                4: [6426],
-                5: [],
-                6: [],
-            }
-            )
+            utils.group_by_weekday_in_secs(utils.get_data()[10]),
+            {
+                0: {'end': [], 'start': []},
+                1: {'end': [64792], 'start': [34745]},
+                2: {'end': [58057], 'start': [33592]},
+                3: {'end': [62631], 'start': [38926]},
+                4: {'end': [], 'start': []},
+                5: {'end': [], 'start': []},
+                6: {'end': [], 'start': []},
+            },
+        )
 
 
 def suite():
