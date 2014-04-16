@@ -58,9 +58,10 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Test mean presence time of given users.
         """
         resp = self.client.get('/api/v1/mean_time_weekday/10')
+        self.assertEqual(resp.content_type, 'application/json')
         self.assertEqual(resp.status_code, 200)
         data = json.loads(resp.data)
-
+        self.assertEqual(len(data), 7)
         self.assertListEqual(
             data,
             [
@@ -129,8 +130,16 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         Testing if mean function calculates correctly.
         """
-        self.assertEqual(utils.mean([3, 4, 5]), 4)
-        self.assertEqual(utils.mean([]), 0)
+        self.assertEqual(
+            utils.mean([3, 4, 5]), 4
+        )
+        self.assertEqual(
+            utils.mean([]), 0
+        )
+        self.assertAlmostEqual(
+            utils.mean([12.7, 20.5, 16.5]),
+            16.56666666,
+        )
 
     def test_seconds_since_midnight(self):
         """
@@ -138,7 +147,12 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         self.assertEqual(
             utils.seconds_since_midnight(datetime.time(12, 35, 0)),
-            45300)
+            45300,
+        )
+        self.assertEqual(
+            utils.seconds_since_midnight(datetime.time(15, 40, 0)),
+            56400,
+        )
 
     def test_interval(self):
         """
@@ -147,7 +161,9 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         self.assertEqual(
             utils.interval(
                 (datetime.time(12, 30, 00)),
-                (datetime.time(12, 30, 15))), 15)
+                (datetime.time(12, 30, 15))),
+            15,
+        )
 
     def test_group_by_weekday(self):
         """
@@ -164,11 +180,11 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 4: [],
                 5: [],
                 6: [],
-            }
+            },
         )
-
         self.assertDictEqual(
-            utils.group_by_weekday(utils.get_data()[11]),
+            utils.group_by_weekday(
+                utils.get_data()[11]),
             {
                 0: [24123],
                 1: [16564],
@@ -177,7 +193,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 4: [6426],
                 5: [],
                 6: [],
-            }
+            },
         )
 
 
