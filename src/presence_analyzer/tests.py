@@ -201,17 +201,6 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 6: [],
             }
         )
-        self.assertDictEqual(
-            utils.group_by_weekday(utils.get_data()[11]), {
-                0: [24123],
-                1: [16564],
-                2: [25321],
-                3: [22969, 22999],
-                4: [6426],
-                5: [],
-                6: [],
-            }
-        )
 
     def test_group_by_weekday_in_secs(self):
         """
@@ -228,7 +217,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 5: {'end': [], 'start': []},
                 6: {'end': [], 'start': []},
             }
-        )
+            )
 
 
 def suite():
@@ -242,4 +231,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main
+    unittest.main()
