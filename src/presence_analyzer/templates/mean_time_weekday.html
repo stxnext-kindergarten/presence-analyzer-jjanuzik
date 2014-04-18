@@ -1,7 +1,3 @@
-{% block title %}
-<form action="ukrycie">
-     <input type="hidden" name="active_page" value="Mean time by weekday" />
-</form> {% endblock %}
 {% set active_page = 2 %}
 {% extends "base.html" %}
 {% block content %}
@@ -61,4 +57,7 @@
         })(jQuery);
     </script>
 </head>
+{% endblock %}
+{% block title %}
+Mean time by weekday
 {% endblock %}

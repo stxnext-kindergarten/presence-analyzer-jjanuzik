@@ -1,7 +1,3 @@
-{% block title %}
-<form action="ukrycie">
-     <input type="hidden" name="active_page" value="Presence mean time by    weekday" />
-</form> {% endblock %}
 {% set active_page = 1 %}
 {% extends "base.html" %}
 {% block content %}
@@ -45,3 +41,6 @@
 
 {% endblock %}
 
+{% block title %}
+Presence mean time by weekday
+{% endblock %}
