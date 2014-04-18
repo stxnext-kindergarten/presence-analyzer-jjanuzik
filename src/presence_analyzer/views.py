@@ -12,6 +12,9 @@ from presence_analyzer.utils import(
     get_data, mean, group_by_weekday,
     group_by_weekday_in_secs,
 )
+from flask.helpers import make_response
+
+from jinja2 import exceptions
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
@@ -23,7 +26,7 @@ def mainpage():
     Redirects to front page.
     """
     return redirect(
-        url_for('template', url='presence_weekday.html')
+        url_for('template_view', template_name='presence_weekday')
     )
 
 
@@ -94,9 +97,12 @@ def presence_start_end(user_id):
     return result
 
 
-@app.route('/templates/<string:url>', methods=['GET'])
-def template(url):
+@app.route('/<string:template_name>', methods=['GET'])
+def template_view(template_name):
     """
-    Templates
+    Renders webside
     """
-    return render_template(url)
+    try:
+        return render_template("{}.html".format(template_name))
+    except exceptions.TemplateNotFound:
+        return make_response("Strona o podanym adresie nie istnieje")

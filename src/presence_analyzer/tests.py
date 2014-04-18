@@ -8,6 +8,8 @@ import datetime
 import unittest
 
 from presence_analyzer import main, views, utils
+from flask import render_template
+
 
 
 TEST_DATA_CSV = os.path.join(
@@ -40,7 +42,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 302)
-        assert resp.headers['Location'].endswith('/presence_weekday.html')
+        assert resp.headers['Location'].endswith('/presence_weekday')
 
     def test_api_users(self):
         """
@@ -119,6 +121,13 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             ],
         )
 
+    def test_template_view(self):
+        """
+        Testing if templates are rendered properly
+        """
+        resp = self.client.get('/presence_weekday')
+        self.assertEqual(resp.status_code, 200)
+        assert "Presence mean time by weekday" in resp.data
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """

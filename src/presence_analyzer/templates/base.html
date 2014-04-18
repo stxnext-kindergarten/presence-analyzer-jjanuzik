@@ -10,7 +10,7 @@
     <meta name="description" content=""/>
     <meta name="author" content="STX Next sp. z o.o."/>
     <meta name="viewport" content="width=device-width; initial-scale=1.0">
-    <script src="/static/js/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 </head>
 <body>
@@ -18,20 +18,20 @@
         <div id="header">
             <h1>Presence analyzer</h1>
             {% set list = [
-            {'url':'/templates/presence_weekday.html', 'caption': 'Presence by weekday', 'page_id':1},
-            {'url':'/templates/mean_time_weekday.html', 'caption': 'Presence mean time', 'page_id': 2},
-            {'url':'/templates/presence_start_end.html', 'caption': 'Presence start-end', 'page_id':3 }
+            {'url': url_for('template_view', template_name ='presence_weekday'), 'caption': 'Presence by weekday', 'page_id':1},
+            {'url': url_for('template_view', template_name ='mean_time_weekday'), 'caption': 'Presence mean time', 'page_id': 2},
+            {'url': url_for('template_view', template_name= 'presence_start_end'), 'caption': 'Presence start-end', 'page_id':3 }
             ] %}
             <ul>
-                {% for item in list %}
-                    {% if active_page == item.page_id %}
-                    <li id="selected">
-                    {% else %}
-                    <li>
-                    {% endif %}
+                    {% for item in list %}
+                        {% if active_page == item.page_id %}
+                        <li id="selected">
+                        {% else %}
+                        <li>
+                        {% endif %}
 
-                    <a href="{{ item.url }}">{{item.caption}}</a></li>
-                {% endfor %}
+                        <a href="{{ item.url }}">{{item.caption}}</a></li>
+                    {% endfor %}
 
 
             </ul>
@@ -45,7 +45,7 @@
                 <div id="chart_div" style="display: none">
                 </div>
                 <div id="loading">
-                    <img src="/static/img/loading.gif" />
+                <img src={{url_for('static', filename='/img/loading.gif')}}/>
                 </div>
             </p>
         </div>
