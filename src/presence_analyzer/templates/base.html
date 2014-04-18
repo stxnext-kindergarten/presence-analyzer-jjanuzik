@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang=en>
+<head>
+
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/view.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/normalize.css') }}">
+    <meta charset=utf-8>
+    <title>Presence analyzer</title>
+    <meta name="keywords" content="" />
+    <meta name="description" content=""/>
+    <meta name="author" content="STX Next sp. z o.o."/>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <script src="/static/js/jquery.min.js"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+</head>
+<body>
+    <div id="main">
+        <div id="header">
+            <h1>Presence analyzer</h1>
+            {%
+            set lista = [
+            {'url':'/templates/presence_weekday.html', 'caption': 'Presence by weekday', 'page_id':1},
+            {'url':'/templates/mean_time_weekday.html', 'caption': 'Presence mean time', 'page_id': 2},
+            {'url':'/templates/presence_start_end.html', 'caption': 'Presence start-end', 'page_id':3 }
+            ] %}
+            <ul>
+                {% for item in lista %}
+                    {% if active_page == item.page_id %}
+                    <li id="selected">
+                    {% else %}
+                    <li>
+                    {% endif %}
+
+                    <a href="{{ item.url }}">{{item.caption}}</a></li>
+                {% endfor %}
+
+
+            </ul>
+        </div>
+        <div id="content">
+            <h2>{% block title %}{% endblock %}</h2>
+            <p>
+                <select id="user_id" style="display: none">
+                    <option value="">--</option>
+                </select>
+                <div id="chart_div" style="display: none">
+                </div>
+                <div id="loading">
+                    <img src="/static/img/loading.gif" />
+                </div>
+            </p>
+        </div>
+
+    </div>
+
+    {% block content %}{% endblock %}
+</body>
+</html>
