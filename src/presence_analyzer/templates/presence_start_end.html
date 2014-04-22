@@ -1,6 +1,8 @@
-{% set active_page = 3 %}
-{% extends "base.html" %}
-{% block content %}
+<% active_page = 3 %>
+<%inherit file="base.html"/>
+
+
+<%block name="content">
 <head>
    <script type="text/javascript">
         google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
@@ -15,7 +17,7 @@
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
-                $.getJSON("{{url_for('users_view')}}", function(result) {
+                $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
                     $.each(result, function(item) {
                         dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -29,7 +31,7 @@
                     if(selected_user) {
                         loading.show();
                         chart_div.hide();
-                        $.getJSON("{{url_for('presence_start_end', user_id = 0)}}"+selected_user,
+                        $.getJSON("${url_for('presence_start_end', user_id = 0)}"+selected_user,
                             function(result) {
                             if (result.length != 0){
                                 $.each(result, function(index, value){
@@ -60,8 +62,8 @@
     </script>
 </head>
 
-{% endblock %}
+</%block>
 
-{% block title %}
+<%block name="title">
 Presence by start end
-{% endblock %}
+</%block>
