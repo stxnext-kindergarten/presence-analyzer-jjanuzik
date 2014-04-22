@@ -7,13 +7,17 @@ import calendar
 
 from flask import redirect, render_template, url_for
 from flask.helpers import make_response
-from jinja2.exceptions import TemplateNotFound
+from flask import Flask
+from flask.ext.mako import MakoTemplates, render_template
+from mako.exceptions import TopLevelLookupException
+
 
 from presence_analyzer.main import app
 from presence_analyzer import utils
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
+mako = MakoTemplates(app)
 
 
 @app.route('/')
@@ -100,5 +104,5 @@ def template_view(template_name):
     """
     try:
         return render_template("{}.html".format(template_name))
-    except TemplateNotFound:
+    except TopLevelLookupException:
         return make_response("Strona o podanym adresie nie istnieje")

@@ -1,6 +1,6 @@
-{% set active_page = 2 %}
-{% extends "base.html" %}
-{% block content %}
+<% active_page = 2 %>
+<%inherit file="base.html"/>
+<%block name="content">
 
 <head>
     <script type="text/javascript">
@@ -16,7 +16,7 @@
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
-                $.getJSON("{{url_for('users_view')}}", function(result) {
+                $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
                     $.each(result, function(item) {
                         dropdown.append($("<option />").val(this.user_id).text(this.name));
@@ -30,7 +30,7 @@
                     if(selected_user) {
                         loading.show();
                         chart_div.hide();
-                        $.getJSON("{{url_for('mean_time_weekday_view', user_id = 0)}}"+selected_user, function(result) {
+                        $.getJSON("${url_for('mean_time_weekday_view', user_id = 0)}"+selected_user, function(result) {
                             $.each(result, function(index, value) {
                                 value[1] = parseInterval(value[1]);
                             });
@@ -57,7 +57,7 @@
         })(jQuery);
     </script>
 </head>
-{% endblock %}
-{% block title %}
+</%block>
+<%block name="title">
 Mean time by weekday
-{% endblock %}
+</%block>
