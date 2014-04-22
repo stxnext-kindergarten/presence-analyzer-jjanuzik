@@ -11,7 +11,6 @@ from presence_analyzer import main, views, utils
 from flask import render_template
 
 
-
 TEST_DATA_CSV = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
 )
@@ -128,6 +127,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         resp = self.client.get('/presence_weekday')
         self.assertEqual(resp.status_code, 200)
         assert "Presence mean time by weekday" in resp.data
+
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
     """
