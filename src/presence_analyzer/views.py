@@ -96,7 +96,7 @@ def presence_start_end(user_id):
 @app.route('/<string:template_name>', methods=['GET'])
 def template_view(template_name):
     """
-    Renders a proper template based on template NAME given in request params.
+    Renders a proper template based on template name given in request params.
     """
     try:
         return render_template("{}.html".format(template_name))
