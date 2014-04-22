@@ -5,9 +5,8 @@ Defines views.
 
 import calendar
 
-from flask import redirect, render_template, url_for
+from flask import redirect, url_for
 from flask.helpers import make_response
-from flask import Flask
 from flask.ext.mako import MakoTemplates, render_template
 from mako.exceptions import TopLevelLookupException
 
