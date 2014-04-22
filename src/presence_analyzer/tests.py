@@ -41,7 +41,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         resp = self.client.get('/')
         self.assertEqual(resp.status_code, 302)
-        assert resp.headers['Location'].endswith('/presence_weekday')
+        self.assertTrue(resp.headers['Location'].endswith('/presence_weekday'))
 
     def test_api_users(self):
         """
@@ -126,7 +126,15 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         resp = self.client.get('/presence_weekday')
         self.assertEqual(resp.status_code, 200)
-        assert "Presence mean time by weekday" in resp.data
+        self.assertIn("Presence mean time by weekday", resp.data)
+
+        resp = self.client.get('/presence_start_end')
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Presence by start end", resp.data)
+
+        resp = self.client.get('/mean_time_weekday')
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Mean time by weekday", resp.data)
 
 
 class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
