@@ -7,6 +7,8 @@ import csv
 from json import dumps
 from functools import wraps
 from datetime import datetime
+from lxml import etree
+from lxml.etree import ElementTree as ET
 
 from flask import Response
 
@@ -110,3 +112,32 @@ def group_by_weekday_in_secs(items):
         result[date.weekday()]['start'].append(seconds_since_midnight(start))
         result[date.weekday()]['end'].append(seconds_since_midnight(end))
     return result
+
+def prase_users_xml():
+    """
+    Parses user information
+    """
+    # tree = etree.parse("./xml/users.xml")
+    # parsed = etree.tostring(
+    #             tree.getroot(),
+    #             ding='UTF-8',
+    # ) 
+    # root = etree.fromstring(parsed)
+    # for i in child:
+
+    # return result
+    # child[i].get("id")
+
+    users = {}
+    tree = etree.parse("./xml/users.xml")
+    server = find.tree('server')
+    host = server.find('host').text
+    users_element = find.tree('users')
+    users = {    
+        int(users.get('id')): {
+            'name': user.find('name').text,
+            'avatar': user.find('avatar').text,
+        }
+        for user in users_element
+    }
+    

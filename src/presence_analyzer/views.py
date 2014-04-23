@@ -13,6 +13,7 @@ from mako.exceptions import TopLevelLookupException
 
 from presence_analyzer.main import app
 from presence_analyzer import utils
+from lxml import etree
 
 import logging
 log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
@@ -105,3 +106,16 @@ def template_view(template_name):
         return render_template("{}.html".format(template_name))
     except TopLevelLookupException:
         return make_response("Strona o podanym adresie nie istnieje")
+
+
+@app.route('/api/v2/users/<int:user_id>', methods=['GET'])
+@utils.jsonify
+def users_xml_view(user_id):
+    """
+    Returns proper xml data depeding on user_id
+    """
+    data = users[user_id]
+    if user_id not in data:
+        log.debug('Sorry, user %s not found!', user_id)
+        return []
+    return data
