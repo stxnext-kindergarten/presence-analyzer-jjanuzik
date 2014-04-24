@@ -15,8 +15,13 @@ TEST_DATA_CSV = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
 )
 
+TEST_DATA_XML = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.xml'
+)
 
 # pylint: disable=E1103
+
+
 class PresenceAnalyzerViewsTestCase(unittest.TestCase):
     """
     Views tests
@@ -27,6 +32,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Before each test, set up a environment
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        main.app.config.update({'DATA_XML': TEST_DATA_XML})
         self.client = main.app.test_client()
 
     def tearDown(self):
@@ -47,12 +53,15 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Test users listing.
         """
-        resp = self.client.get('/api/v1/users')
+        resp = self.client.get('/api/v2/users')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
-        self.assertEqual(len(data), 2)
-        self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
+        print data.keys()
+        self.assertEqual(
+            sorted(data.keys()),
+            [u'141', u'165', u'170', u'176', u'26']
+        )
 
     def test_mean_time_weekday_view(self):
         """

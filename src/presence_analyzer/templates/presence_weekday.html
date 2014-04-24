@@ -2,26 +2,20 @@
 <%inherit file='base.html'/>
 <%block name="content">
 
+
 <head>
     <script type="text/javascript">
-        google.load("visualization", "1", {
-            packages:["corechart"],
-            'language': 'pl'
-        });
-    
-        function parseInterval(value) {
-            var result = new Date(1,1,1);
-            result.setMilliseconds(value*1000);
-            return result;
-        }
+        google.load("visualization", "1", {packages:["corechart"], 'language': 'en'});
 
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading');
+                var users;
                 $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
-                    $.each(result, function(item) {
-                        dropdown.append($("<option />").val(this.user_id).text(this.name));
+                    users = result;
+                    $.each(result, function(key, item) {
+                        dropdown.append($("<option />").val(key).text(this.name));
                     });
                     dropdown.show();
                     loading.hide();
@@ -29,9 +23,10 @@
                 $('#user_id').change(function(){
                     var selected_user = $("#user_id").val();
                     var chart_div = $('#chart_div');
-                    if(selected_user) {
+                    if (selected_user) {
                         loading.show();
                         chart_div.hide();
+                        $('#avatar').show().find('img').attr('src', users[selected_user].avatar);
                         $.getJSON("${url_for('presence_weekday_view', user_id = 0)}"+selected_user, function(result) {
                             var data = google.visualization.arrayToDataTable(result);
                             var options = {};
