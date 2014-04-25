@@ -11,6 +11,9 @@ from functools import wraps
 from datetime import datetime
 from lxml import etree
 from flask import Response
+import logging
+
+log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 
 from presence_analyzer.main import app
