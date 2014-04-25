@@ -30,6 +30,31 @@ def jsonify(function):
     return inner
 
 
+def cache(function, time=datetime.datetime.now()):
+    """
+    Cache
+    """
+    # now = datetime.datetime.now("%S")
+
+    function.cache = {}
+
+    @wraps(function)
+    def res_fun(*args):
+        """
+        Function that checks if we have already cahed items or not
+        """
+        if args in function.cache:
+            return function.cache[args]
+        else:
+            result = function(*args)
+            function.cache[args] = result
+            now = datetime.datetime.now()
+            result = result.append(now)
+            return result
+    return res_fun
+
+
+@cache
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.
