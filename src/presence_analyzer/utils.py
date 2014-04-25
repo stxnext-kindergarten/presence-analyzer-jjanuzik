@@ -124,7 +124,7 @@ def parse_users_xml():
         protocol = server.find('protocol').text
         users_element = tree.find('users')
         result = {
-            user.get('id'): {
+            int(user.get('id')): {
                 'name': user.find('name').text,
                 'avatar': "{protocol}://{host}{avatar}".format(
                     protocol=protocol,

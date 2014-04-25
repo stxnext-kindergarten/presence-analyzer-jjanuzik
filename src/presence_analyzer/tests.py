@@ -155,6 +155,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Before each test, set up a environment.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        main.app.config.update({'DATA_XML': TEST_DATA_XML})
 
     def tearDown(self):
         """
@@ -234,7 +235,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
 
     def test_group_by_weekday_in_secs(self):
         """
-        Testingpresence during weekday in seconds including start and end
+        Testing presence during weekday in seconds including start and end
         """
         self.assertDictEqual(
             utils.group_by_weekday_in_secs(utils.get_data()[10]),
@@ -247,6 +248,16 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 5: {'end': [], 'start': []},
                 6: {'end': [], 'start': []},
             },
+        )
+
+    def test_parse_users_xml(self):
+        """
+        Testing if parse_users_xml works correctly
+        """
+        data = utils.parse_users_xml()
+        self.assertEqual(
+            sorted(data.keys()),
+            [26, 141, 165, 170., 176]
         )
 
 
