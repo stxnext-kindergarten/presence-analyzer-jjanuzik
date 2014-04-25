@@ -29,7 +29,7 @@ def mainpage():
     )
 
 
-@app.route('/api/v2/users', methods=['GET'])
+@app.route('/api/v1/users', methods=['GET'])
 @utils.jsonify
 def users_view():
     """

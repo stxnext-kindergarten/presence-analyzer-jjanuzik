@@ -5,11 +5,13 @@ Helper functions used in views.
 
 import csv
 import xml
+import urllib2
 from json import dumps
 from functools import wraps
 from datetime import datetime
 from lxml import etree
 from flask import Response
+
 
 from presence_analyzer.main import app
 
@@ -134,3 +136,13 @@ def parse_users_xml():
             } for user in users_element
         }
     return result
+
+
+def update_xml_file():
+    """
+    Updates users.xml file
+    """
+    with open(app.config['DATA_XML'], 'w+') as xmlfile:
+        response = urllib2.urlopen('http://sargo.bolt.stxnext.pl/users.xml')
+        new_data = response.read()
+        xmlfile.write(new_data)

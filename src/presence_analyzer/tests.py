@@ -53,7 +53,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Test users listing.
         """
-        resp = self.client.get('/api/v2/users')
+        resp = self.client.get('/api/v1/users')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
@@ -257,7 +257,21 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         data = utils.parse_users_xml()
         self.assertEqual(
             sorted(data.keys()),
-            [26, 141, 165, 170., 176]
+            [26, 141, 165, 170, 176]
+        )
+        self.assertEqual(
+            data[141],
+            {
+                'name': 'Adam P.',
+                'avatar': 'https://intranet.stxnext.pl/api/images/users/141',
+            }
+        )
+        self.assertEqual(
+            data[26],
+            {
+                'name': 'Andrzej S.',
+                'avatar': 'https://intranet.stxnext.pl/api/images/users/26',
+            }
         )
 
 
