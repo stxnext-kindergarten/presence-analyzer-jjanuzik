@@ -18,7 +18,6 @@
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading'), users;
-                var users;
                 $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
                     users = result;

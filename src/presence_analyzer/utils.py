@@ -15,9 +15,6 @@ from flask import Response
 
 from presence_analyzer.main import app
 
-import logging
-log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
-
 
 def jsonify(function):
     """
@@ -143,6 +140,6 @@ def update_xml_file():
     Updates users.xml file
     """
     with open(app.config['DATA_XML'], 'w+') as xmlfile:
-        response = urllib2.urlopen('http://sargo.bolt.stxnext.pl/users.xml')
+        response = urllib2.urlopen(app.config['XML_SOURCE'])
         new_data = response.read()
         xmlfile.write(new_data)
