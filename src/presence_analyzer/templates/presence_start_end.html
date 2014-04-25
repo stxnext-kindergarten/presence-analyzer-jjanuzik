@@ -1,13 +1,14 @@
 <% active_page = 3 %>
 <%inherit file="base.html"/>
-
-
 <%block name="content">
+
 <head>
-   <script type="text/javascript">
-        google.load("visualization", "1", {packages:["corechart", "timeline"], 'language': 'pl'});
-    </script>
     <script type="text/javascript">
+        google.load("visualization", "1", {
+            packages:["corechart", "timeline"],
+            'language': 'pl'
+        });
+
         function parseInterval(value) {
             var result = new Date(1,1,1);
             result.setMilliseconds(value*1000);
@@ -16,11 +17,12 @@
 
         (function($) {
             $(document).ready(function(){
-                var loading = $('#loading');
+                var loading = $('#loading'), users;
                 $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
-                    $.each(result, function(item) {
-                        dropdown.append($("<option />").val(this.user_id).text(this.name));
+                    users = result;
+                    $.each(result, function(key, item) {
+                        dropdown.append($("<option />").val(key).text(this.name));
                     });
                     dropdown.show();
                     loading.hide();
@@ -31,6 +33,7 @@
                     if(selected_user) {
                         loading.show();
                         chart_div.hide();
+                        $('#avatar').show().find('img').attr('src', users[selected_user].avatar)
                         $.getJSON("${url_for('presence_start_end', user_id = 0)}"+selected_user,
                             function(result) {
                             if (result.length != 0){

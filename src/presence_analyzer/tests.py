@@ -15,8 +15,13 @@ TEST_DATA_CSV = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.csv'
 )
 
+TEST_DATA_XML = os.path.join(
+    os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.xml'
+)
 
 # pylint: disable=E1103
+
+
 class PresenceAnalyzerViewsTestCase(unittest.TestCase):
     """
     Views tests
@@ -27,6 +32,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         Before each test, set up a environment
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        main.app.config.update({'DATA_XML': TEST_DATA_XML})
         self.client = main.app.test_client()
 
     def tearDown(self):
@@ -51,8 +57,17 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
-        self.assertEqual(len(data), 2)
-        self.assertDictEqual(data[0], {u'user_id': 10, u'name': u'User 10'})
+        self.assertEqual(
+            sorted(data.keys()),
+            [u'141', u'165', u'170', u'176', u'26']
+        )
+        self.assertEqual(
+            data['170'],
+            {
+                'name': 'Agata J.',
+                'avatar': 'https://intranet.stxnext.pl/api/images/users/170',
+            }
+        )
 
     def test_mean_time_weekday_view(self):
         """
@@ -146,6 +161,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Before each test, set up a environment.
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        main.app.config.update({'DATA_XML': TEST_DATA_XML})
 
     def tearDown(self):
         """
@@ -225,7 +241,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
 
     def test_group_by_weekday_in_secs(self):
         """
-        Testingpresence during weekday in seconds including start and end
+        Testing presence during weekday in seconds including start and end
         """
         self.assertDictEqual(
             utils.group_by_weekday_in_secs(utils.get_data()[10]),
@@ -238,6 +254,30 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 5: {'end': [], 'start': []},
                 6: {'end': [], 'start': []},
             },
+        )
+
+    def test_parse_users_xml(self):
+        """
+        Testing if parse_users_xml works correctly
+        """
+        data = utils.parse_users_xml()
+        self.assertEqual(
+            sorted(data.keys()),
+            [26, 141, 165, 170, 176]
+        )
+        self.assertEqual(
+            data[141],
+            {
+                'name': 'Adam P.',
+                'avatar': 'https://intranet.stxnext.pl/api/images/users/141',
+            }
+        )
+        self.assertEqual(
+            data[26],
+            {
+                'name': 'Andrzej S.',
+                'avatar': 'https://intranet.stxnext.pl/api/images/users/26',
+            }
         )
 
 

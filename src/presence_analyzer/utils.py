@@ -4,16 +4,19 @@ Helper functions used in views.
 """
 
 import csv
+import xml
+import urllib2
 from json import dumps
 from functools import wraps
 from datetime import datetime
-
+from lxml import etree
 from flask import Response
+import logging
+
+log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
+
 
 from presence_analyzer.main import app
-
-import logging
-log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 
 def jsonify(function):
@@ -110,3 +113,36 @@ def group_by_weekday_in_secs(items):
         result[date.weekday()]['start'].append(seconds_since_midnight(start))
         result[date.weekday()]['end'].append(seconds_since_midnight(end))
     return result
+
+
+def parse_users_xml():
+    """
+    Parses user information
+    """
+    with open(app.config['DATA_XML'], 'r') as xmlfile:
+        tree = etree.parse(xmlfile)
+        server = tree.find('server')
+        host = server.find('host').text
+        protocol = server.find('protocol').text
+        users_element = tree.find('users')
+        result = {
+            int(user.get('id')): {
+                'name': user.find('name').text,
+                'avatar': "{protocol}://{host}{avatar}".format(
+                    protocol=protocol,
+                    host=host,
+                    avatar=user.find('avatar').text
+                    )
+            } for user in users_element
+        }
+    return result
+
+
+def update_xml_file():
+    """
+    Updates users.xml file
+    """
+    with open(app.config['DATA_XML'], 'w+') as xmlfile:
+        response = urllib2.urlopen(app.config['XML_SOURCE'])
+        new_data = response.read()
+        xmlfile.write(new_data)
