@@ -1,3 +1,11 @@
+<%!
+    active_page = 0
+    list = [
+        {'url': url_for('template_view', template_name ='presence_weekday'), 'caption': 'Presence by weekday', 'page_id': 1},
+        {'url': url_for('template_view', template_name ='mean_time_weekday'), 'caption': 'Presence mean time', 'page_id': 2},
+        {'url': url_for('template_view', template_name= 'presence_start_end'), 'caption': 'Presence start-end', 'page_id': 3}
+    ]
+%>
 <!doctype html>
 <html lang=en>
 <head>
@@ -17,22 +25,18 @@
     <div id="main">
         <div id="header">
             <h1>Presence analyzer</h1>
-            <% list = [
-            {'url': url_for('template_view', template_name ='presence_weekday'), 'caption': 'Presence by weekday', 'page_id':1},
-            {'url': url_for('template_view', template_name ='mean_time_weekday'), 'caption': 'Presence mean time', 'page_id': 2},
-            {'url': url_for('template_view', template_name= 'presence_start_end'), 'caption': 'Presence start-end', 'page_id':3 }
-            ] %>
              <ul>
-                    % for item in list:
-                        % if active_page == item['page_id']:
-                        <li id="selected">
-                        % else:
-                        <li>
-                        % endif
-                        <a href=${item['url']}>${item['caption']}</a></li>
-                    % endfor
+                % for item in list:
+                    % if self.attr.active_page == item['page_id']:
+                    <li id="selected">
+                    % else:
+                    <li>
+                    % endif
+                    <a href=${item['url']}>${item['caption']}</a></li>
+                % endfor
             </ul>
         </div>
+
         <div id="content">
             <h2> <%block name="title"/> </h2>
             <p>
