@@ -1,4 +1,7 @@
-<% active_page = 2 %>
+<%!
+    active_page = 2
+%>
+
 <%inherit file="base.html"/>
 <%block name="content">
 
@@ -13,7 +16,7 @@
             result.setMilliseconds(value*1000);
             return result;
         }
-
+        var active_page = 2;
         (function($) {
             $(document).ready(function(){
                 var loading = $('#loading'), users;
