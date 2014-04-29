@@ -7,6 +7,7 @@ import json
 import datetime
 import unittest
 
+from time import sleep
 from presence_analyzer import main, views, utils
 from flask import render_template
 
@@ -17,6 +18,15 @@ TEST_DATA_CSV = os.path.join(
 
 TEST_DATA_XML = os.path.join(
     os.path.dirname(__file__), '..', '..', 'runtime', 'data', 'test_data.xml'
+)
+
+TEST_CACHE_DATA_CSV = os.path.join(
+    os.path.dirname(__file__),
+    '..',
+    '..',
+    'runtime',
+    'data',
+    'sample_cache_data.csv',
 )
 
 # pylint: disable=E1103
@@ -162,6 +172,7 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         """
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
         main.app.config.update({'DATA_XML': TEST_DATA_XML})
+        main.app.config.update({'CACHE_DATA_CSV': TEST_CACHE_DATA_CSV})
 
     def tearDown(self):
         """
@@ -279,6 +290,23 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
                 'avatar': 'https://intranet.stxnext.pl/api/images/users/26',
             }
         )
+
+    def test_cache_function(self):
+        """
+        Testing caching function
+        """
+        data = utils.get_data()
+        additional_data = open(TEST_CACHE_DATA_CSV, 'w')
+        additional_data.write('13,2011-07-09,09:21:46,16:59:43')
+        additional_data.close()
+        new_data = utils.get_data()
+        self.assertDictEqual(data, new_data)
+        main.app.config.update({'DATA_CSV': TEST_CACHE_DATA_CSV})
+        sleep(10)
+        new_data = utils.get_data()
+        self.assertNotEqual(data, new_data)
+        main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
+        sleep(10)
 
 
 def suite():

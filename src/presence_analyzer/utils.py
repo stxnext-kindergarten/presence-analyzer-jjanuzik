@@ -6,6 +6,8 @@ Helper functions used in views.
 import csv
 import xml
 import urllib2
+import time
+import threading
 from json import dumps
 from functools import wraps
 from datetime import datetime
@@ -17,6 +19,9 @@ log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 
 from presence_analyzer.main import app
+CACHE = {}
+TIMESTAMPS = {}
+LOCKER = threading.Lock()
 
 
 def jsonify(function):
@@ -30,31 +35,50 @@ def jsonify(function):
     return inner
 
 
-def cache(function, time=datetime.datetime.now()):
+def cache(key, seconds):
     """
     Cache
     """
-    # now = datetime.datetime.now("%S")
+    def _cache(function):
+        def __cache(*args, **kwargs):
+            """
+            Function that checks if we have already cached items or not
+            If we do, it returns cached items, if not adds them to cache dict.
+            """
+            now = datetime.now()
+            timestamp = time.mktime(now.timetuple())
+            if key in CACHE:
+                if timestamp < TIMESTAMPS.get(key, 0):
+                    return CACHE[key]
 
-    function.cache = {}
+            result = function(*args, **kwargs)
+            CACHE[key] = result
+            expired_timestamp = timestamp + seconds
+            TIMESTAMPS[key] = expired_timestamp
+            return CACHE[key]
 
-    @wraps(function)
-    def res_fun(*args):
-        """
-        Function that checks if we have already cahed items or not
-        """
-        if args in function.cache:
-            return function.cache[args]
-        else:
-            result = function(*args)
-            function.cache[args] = result
-            now = datetime.datetime.now()
-            result = result.append(now)
-            return result
-    return res_fun
+        return __cache
+    return _cache
 
 
-@cache
+def locking(locker):
+    """
+    Decorator used for multi-threading
+    """
+    def _locking(function):
+        def __locking(*args, **kwargs):
+            """
+            Locker used for multi-threading
+            """
+            with locker:
+                result = function(*args, **kwargs)
+                return result
+        return __locking
+    return _locking
+
+
+@locking(locker=LOCKER)
+@cache(key='user_id', seconds=10)
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.
