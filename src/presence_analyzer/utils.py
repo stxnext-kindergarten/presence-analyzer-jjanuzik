@@ -6,6 +6,8 @@ Helper functions used in views.
 import csv
 import xml
 import urllib2
+import time
+import threading
 from json import dumps
 from functools import wraps
 from datetime import datetime
@@ -17,6 +19,9 @@ log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
 
 from presence_analyzer.main import app
+CACHE = {}
+TIMESTAMPS = {}
+LOCKER = threading.Lock()
 
 
 def jsonify(function):
@@ -30,6 +35,48 @@ def jsonify(function):
     return inner
 
 
+def cache(key, seconds):
+    """
+    Cache
+    """
+    def _cache(function):
+        def __cache(*args, **kwargs):
+            """
+            Function that checks if we have already cached items or not
+            If we do, it returns cached items, if not adds them to cache dict.
+            """
+            now = datetime.now()
+            timestamp = time.mktime(now.timetuple())
+            if key in CACHE:
+                if timestamp < TIMESTAMPS.get(key, 0):
+                    return CACHE[key]
+
+            result = function(*args, **kwargs)
+            CACHE[key] = result
+            expired_timestamp = timestamp + seconds
+            TIMESTAMPS[key] = expired_timestamp
+            return CACHE[key]
+
+        return __cache
+    return _cache
+
+
+def locking(function):
+    """
+    Decorator used for multi-threading
+    """
+    def __locking(*args, **kwargs):
+        """
+        Locker used for multi-threading
+        """
+        with LOCKER:
+            result = function(*args, **kwargs)
+            return result
+    return __locking
+
+
+@locking
+@cache(key='user_id', seconds=10)
 def get_data():
     """
     Extracts presence data from CSV file and groups it by user_id.
