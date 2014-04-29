@@ -61,23 +61,21 @@ def cache(key, seconds):
     return _cache
 
 
-def locking(locker):
+def locking(function):
     """
     Decorator used for multi-threading
     """
-    def _locking(function):
-        def __locking(*args, **kwargs):
-            """
-            Locker used for multi-threading
-            """
-            with locker:
-                result = function(*args, **kwargs)
-                return result
-        return __locking
-    return _locking
+    def __locking(*args, **kwargs):
+        """
+        Locker used for multi-threading
+        """
+        with LOCKER:
+            result = function(*args, **kwargs)
+            return result
+    return __locking
 
 
-@locking(locker=LOCKER)
+@locking
 @cache(key='user_id', seconds=10)
 def get_data():
     """

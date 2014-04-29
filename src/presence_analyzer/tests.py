@@ -296,17 +296,18 @@ class PresenceAnalyzerUtilsTestCase(unittest.TestCase):
         Testing caching function
         """
         data = utils.get_data()
-        additional_data = open(TEST_CACHE_DATA_CSV, 'w')
-        additional_data.write('13,2011-07-09,09:21:46,16:59:43')
-        additional_data.close()
+        with open(TEST_CACHE_DATA_CSV, 'w') as test_data_file:
+            test_data_file.write('13,2011-07-09,09:21:46,16:59:43')
         new_data = utils.get_data()
         self.assertDictEqual(data, new_data)
         main.app.config.update({'DATA_CSV': TEST_CACHE_DATA_CSV})
-        sleep(10)
+        utils.CACHE = {}
+        utils.TIMESTAMPS = {}
         new_data = utils.get_data()
         self.assertNotEqual(data, new_data)
         main.app.config.update({'DATA_CSV': TEST_DATA_CSV})
-        sleep(10)
+        utils.CACHE = {}
+        utils.TIMESTAMPS = {}
 
 
 def suite():
