@@ -16,15 +16,16 @@
             result.setMilliseconds(value*1000);
             return result;
         }
-        var active_page = 3;
         (function($) {
-            $(document).ready(function(){
-                var loading = $('#loading'), users;
+              $(document).ready(function(){
+                var loading = $('#loading'), users, avatars = {};
                 $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
                     users = result;
-                    $.each(result, function(key, item) {
-                        dropdown.append($("<option />").val(key).text(this.name));
+
+                    $.each(result, function(key, item){
+                        avatars[item[0]] = item[1].avatar;
+                        dropdown.append($("<option />").val(item[0]).text(item[1].name));
                     });
                     dropdown.show();
                     loading.hide();
@@ -35,7 +36,7 @@
                     if(selected_user) {
                         loading.show();
                         chart_div.hide();
-                        $('#avatar').show().find('img').attr('src', users[selected_user].avatar)
+                        $('#avatar').show().find('img').attr('src', avatars[selected_user]);
                         $.getJSON("${url_for('presence_start_end', user_id = 0)}"+selected_user,
                             function(result) {
                             if (result.length != 0){

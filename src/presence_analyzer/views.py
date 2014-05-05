@@ -15,6 +15,8 @@ from presence_analyzer.main import app
 from presence_analyzer import utils
 
 import logging
+import locale
+
 log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 mako = MakoTemplates(app)
 
@@ -35,8 +37,14 @@ def users_view():
     """
     Users listing for dropdown.
     """
+    locale.setlocale(locale.LC_ALL, 'pl_PL.UTF-8')
     data = utils.parse_users_xml()
-    return data
+    sorted_data = sorted(
+        data.items(),
+        key=lambda x: x[1]['name'],
+        cmp=locale.strcoll,
+    )
+    return sorted_data
 
 
 @app.route('/api/v1/mean_time_weekday/<int:user_id>', methods=['GET'])

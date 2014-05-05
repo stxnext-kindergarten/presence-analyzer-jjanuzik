@@ -68,15 +68,14 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(
-            sorted(data.keys()),
-            [u'141', u'165', u'170', u'176', u'26']
-        )
-        self.assertEqual(
-            data['170'],
-            {
-                'name': 'Agata J.',
-                'avatar': 'https://intranet.stxnext.pl/api/images/users/170',
-            }
+            data[2],
+            [170,
+                {
+                    u'name': 'Agata J.',
+                    u'avatar':
+                    'https://intranet.stxnext.pl/api/images/users/170',
+                }
+             ]
         )
 
     def test_mean_time_weekday_view(self):
@@ -91,13 +90,13 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertListEqual(
             data,
             [
-                [u'Mon', 0],
-                [u'Tue', 30047.0],
-                [u'Wed', 24465.0],
-                [u'Thu', 23705.0],
-                [u'Fri', 0],
-                [u'Sat', 0],
-                [u'Sun', 0]
+                [u'pon', 0],
+                [u'wto', 30047.0],
+                [u'śro', 24465.0],
+                [u'czw', 23705.0],
+                [u'pią', 0],
+                [u'sob', 0],
+                [u'nie', 0]
             ],
         )
 
@@ -114,13 +113,13 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             data,
             [
                 [u'Weekday', u'Presence (s)'],
-                [u'Mon', 0],
-                [u'Tue', 30047],
-                [u'Wed', 24465],
-                [u'Thu', 23705],
-                [u'Fri', 0],
-                [u'Sat', 0],
-                [u'Sun', 0],
+                [u'pon', 0],
+                [u'wto', 30047],
+                [u'śro', 24465],
+                [u'czw', 23705],
+                [u'pią', 0],
+                [u'sob', 0],
+                [u'nie', 0],
             ],
         )
 
@@ -135,13 +134,13 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertListEqual(
             data,
             [
-                [u'Mon', 0, 0],
-                [u'Tue', 34745.0, 64792.0],
-                [u'Wed', 33592.0, 58057.0],
-                [u'Thu', 38926.0, 62631.0],
-                [u'Fri', 0, 0],
-                [u'Sat', 0, 0],
-                [u'Sun', 0, 0],
+                [u'pon', 0, 0],
+                [u'wto', 34745.0, 64792.0],
+                [u'śro', 33592.0, 58057.0],
+                [u'czw', 38926.0, 62631.0],
+                [u'pią', 0, 0],
+                [u'sob', 0, 0],
+                [u'nie', 0, 0],
             ],
         )
 
