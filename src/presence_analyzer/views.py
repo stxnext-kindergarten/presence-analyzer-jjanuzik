@@ -44,6 +44,8 @@ def users_view():
         key=lambda x: x[1]['name'],
         cmp=locale.strcoll,
     )
+    locale.resetlocale()
+    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
     return sorted_data
 
 

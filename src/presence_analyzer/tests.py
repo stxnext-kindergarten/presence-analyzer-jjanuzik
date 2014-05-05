@@ -6,7 +6,6 @@ import os.path
 import json
 import datetime
 import unittest
-import locale
 
 from time import sleep
 from presence_analyzer import main, views, utils
@@ -69,14 +68,8 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
-        self.assertEqual(
-            data[2][0],
-            170
-        )
-        self.assertEqual(
-            data[0][0],
-            141
-        )
+        self.assertEqual(data[2][0], 170)
+        self.assertEqual(data[0][0], 141)
         self.assertEqual(data[2][1]['name'], u'Agata J.')
         self.assertEqual(data[0][1]['name'], u'Adam P.')
         self.assertEqual(
@@ -93,8 +86,6 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Test mean presence time of given users.
         """
-
-        locale.setlocale(locale.LC_ALL, 'en_GB.utf-8')
         resp = self.client.get('/api/v1/mean_time_weekday/10')
         self.assertEqual(resp.content_type, 'application/json')
         self.assertEqual(resp.status_code, 200)
@@ -117,7 +108,6 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Test presence weekday view.
         """
-        locale.setlocale(locale.LC_ALL, 'en_GB.utf-8')
         resp = self.client.get('/api/v1/presence_weekday/10')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
@@ -141,7 +131,6 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Testing presence start and end
         """
-        locale.setlocale(locale.LC_ALL, 'en_GB.utf-8')
         resp = self.client.get('/api/v1/presence_start_end/10')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
