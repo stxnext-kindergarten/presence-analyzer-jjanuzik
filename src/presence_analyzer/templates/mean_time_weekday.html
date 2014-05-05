@@ -16,15 +16,15 @@
             result.setMilliseconds(value*1000);
             return result;
         }
-        var active_page = 2;
         (function($) {
             $(document).ready(function(){
-                var loading = $('#loading'), users;
+                var loading = $('#loading'), users, avatars = {};
                 $.getJSON("${url_for('users_view')}", function(result) {
                     var dropdown = $("#user_id");
                     users = result;
                     $.each(result, function(key, item) {
-                        dropdown.append($("<option />").val(key).text(this.name));
+                        avatars[item[0]] = item[1].avatar;
+                        dropdown.append($("<option />").val(item[0]).text(item[1].name));
                     });
                     dropdown.show();
                     loading.hide();
@@ -35,8 +35,9 @@
                     if(selected_user) {
                         loading.show();
                         chart_div.hide();
-                        $('#avatar').show().find('img').attr('src', users[selected_user].avatar);
-                        $.getJSON("${url_for('mean_time_weekday_view', user_id = 0)}"+selected_user, function(result) {
+                        $('#avatar').show().find('img').attr('src', avatars[selected_user]);
+                        $.getJSON("${url_for('mean_time_weekday_view', user_id = 0)}"+selected_user,
+                        function(result) {
                             $.each(result, function(index, value) {
                                 value[1] = parseInterval(value[1]);
                             });

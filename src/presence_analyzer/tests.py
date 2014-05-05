@@ -29,6 +29,7 @@ TEST_CACHE_DATA_CSV = os.path.join(
     'sample_cache_data.csv',
 )
 
+
 # pylint: disable=E1103
 
 
@@ -67,16 +68,18 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
+        self.assertEqual(data[2][0], 170)
+        self.assertEqual(data[0][0], 141)
+        self.assertEqual(data[2][1]['name'], u'Agata J.')
+        self.assertEqual(data[0][1]['name'], u'Adam P.')
         self.assertEqual(
-            sorted(data.keys()),
-            [u'141', u'165', u'170', u'176', u'26']
+            data[0][1]['avatar'],
+            u'https://intranet.stxnext.pl/api/images/users/141',
         )
+
         self.assertEqual(
-            data['170'],
-            {
-                'name': 'Agata J.',
-                'avatar': 'https://intranet.stxnext.pl/api/images/users/170',
-            }
+            data[2][1]['avatar'],
+            u'https://intranet.stxnext.pl/api/images/users/170',
         )
 
     def test_mean_time_weekday_view(self):

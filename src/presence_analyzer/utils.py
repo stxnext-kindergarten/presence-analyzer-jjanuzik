@@ -17,7 +17,6 @@ import logging
 
 log = logging.getLogger(__name__)  # pylint: disable-msg=C0103
 
-
 from presence_analyzer.main import app
 CACHE = {}
 TIMESTAMPS = {}
