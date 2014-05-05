@@ -6,6 +6,7 @@ import os.path
 import json
 import datetime
 import unittest
+import locale
 
 from time import sleep
 from presence_analyzer import main, views, utils
@@ -28,6 +29,7 @@ TEST_CACHE_DATA_CSV = os.path.join(
     'data',
     'sample_cache_data.csv',
 )
+
 
 # pylint: disable=E1103
 
@@ -68,20 +70,31 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertEqual(resp.content_type, 'application/json')
         data = json.loads(resp.data)
         self.assertEqual(
-            data[2],
-            [170,
-                {
-                    u'name': 'Agata J.',
-                    u'avatar':
-                    'https://intranet.stxnext.pl/api/images/users/170',
-                }
-             ]
+            data[2][0],
+            170
+        )
+        self.assertEqual(
+            data[0][0],
+            141
+        )
+        self.assertEqual(data[2][1]['name'], u'Agata J.')
+        self.assertEqual(data[0][1]['name'], u'Adam P.')
+        self.assertEqual(
+            data[0][1]['avatar'],
+            u'https://intranet.stxnext.pl/api/images/users/141',
+        )
+
+        self.assertEqual(
+            data[2][1]['avatar'],
+            u'https://intranet.stxnext.pl/api/images/users/170',
         )
 
     def test_mean_time_weekday_view(self):
         """
         Test mean presence time of given users.
         """
+
+        locale.setlocale(locale.LC_ALL, 'en_GB.utf-8')
         resp = self.client.get('/api/v1/mean_time_weekday/10')
         self.assertEqual(resp.content_type, 'application/json')
         self.assertEqual(resp.status_code, 200)
@@ -90,13 +103,13 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertListEqual(
             data,
             [
-                [u'pon', 0],
-                [u'wto', 30047.0],
-                [u'śro', 24465.0],
-                [u'czw', 23705.0],
-                [u'pią', 0],
-                [u'sob', 0],
-                [u'nie', 0]
+                [u'Mon', 0],
+                [u'Tue', 30047.0],
+                [u'Wed', 24465.0],
+                [u'Thu', 23705.0],
+                [u'Fri', 0],
+                [u'Sat', 0],
+                [u'Sun', 0]
             ],
         )
 
@@ -104,6 +117,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Test presence weekday view.
         """
+        locale.setlocale(locale.LC_ALL, 'en_GB.utf-8')
         resp = self.client.get('/api/v1/presence_weekday/10')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
@@ -113,13 +127,13 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
             data,
             [
                 [u'Weekday', u'Presence (s)'],
-                [u'pon', 0],
-                [u'wto', 30047],
-                [u'śro', 24465],
-                [u'czw', 23705],
-                [u'pią', 0],
-                [u'sob', 0],
-                [u'nie', 0],
+                [u'Mon', 0],
+                [u'Tue', 30047],
+                [u'Wed', 24465],
+                [u'Thu', 23705],
+                [u'Fri', 0],
+                [u'Sat', 0],
+                [u'Sun', 0],
             ],
         )
 
@@ -127,6 +141,7 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         """
         Testing presence start and end
         """
+        locale.setlocale(locale.LC_ALL, 'en_GB.utf-8')
         resp = self.client.get('/api/v1/presence_start_end/10')
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp.content_type, 'application/json')
@@ -134,13 +149,13 @@ class PresenceAnalyzerViewsTestCase(unittest.TestCase):
         self.assertListEqual(
             data,
             [
-                [u'pon', 0, 0],
-                [u'wto', 34745.0, 64792.0],
-                [u'śro', 33592.0, 58057.0],
-                [u'czw', 38926.0, 62631.0],
-                [u'pią', 0, 0],
-                [u'sob', 0, 0],
-                [u'nie', 0, 0],
+                [u'Mon', 0, 0],
+                [u'Tue', 34745.0, 64792.0],
+                [u'Wed', 33592.0, 58057.0],
+                [u'Thu', 38926.0, 62631.0],
+                [u'Fri', 0, 0],
+                [u'Sat', 0, 0],
+                [u'Sun', 0, 0],
             ],
         )
 
