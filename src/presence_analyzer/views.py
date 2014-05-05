@@ -37,15 +37,14 @@ def users_view():
     """
     Users listing for dropdown.
     """
-    locale.setlocale(locale.LC_ALL, 'pl_PL.UTF-8')
     data = utils.parse_users_xml()
+    locale.setlocale(locale.LC_COLLATE, 'pl_PL.UTF-8')
     sorted_data = sorted(
         data.items(),
         key=lambda x: x[1]['name'],
         cmp=locale.strcoll,
     )
-    locale.resetlocale()
-    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+
     return sorted_data
 
 
